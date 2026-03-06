@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap');
+
+:root {
+  --font-heading: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html {
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+
+:root {
+  --bg-start: #050f1a;
+  --bg-mid: #0c1b2f;
+  --bg-end: #060d19;
+  --accent: #22d3ee;
+  --accent-2: #38bdf8;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(145deg, var(--bg-start), var(--bg-mid), var(--bg-end));
+  color: #e2e8f0;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Reusable glassmorphism card style */
+.glass-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  backdrop-filter: blur(16px);
+}
+
+/* Smooth scrollbar for desktop */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.55);
+}
