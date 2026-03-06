@@ -1,8 +1,18 @@
 const mongoose = require('mongoose');
 
 const connectDB = () => {
+  const uri =
+    process.env.MONGO_DB || process.env.MONGO_URI || process.env.MONGODB_URI;
+
+  if (!uri) {
+    console.error(
+      'Missing MongoDB connection string. Set MONGO_DB or MONGO_URI or MONGODB_URI in your environment.'
+    );
+    process.exit(1);
+  }
+
   mongoose
-    .connect(process.env.MONGO_DB, {
+    .connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
