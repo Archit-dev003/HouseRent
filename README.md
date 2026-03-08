@@ -1,58 +1,279 @@
-# HouseRent (Full Stack)
+# HomeBuddy
 
-This repository contains the **HouseRent** project: a full-stack web app with a **React + Vite frontend** and a **Node.js + Express backend**.
+# HomeBuddy - Full Stack House Rental Platform
 
-## 📂 Repository structure
-
-- `Backend/` - backend API server (Node.js + Express + MongoDB)
-- `Frontend/` - frontend application (React + Vite)
-
-## 🚀 Running the project locally
-
-### 1) Backend
-
-```bash
-cd Backend
-npm install
-npm start
-```
-
-The backend runs on `http://localhost:8001` by default.
-
-### 2) Frontend
-
-```bash
-cd Frontend
-npm install
-npm run dev
-```
-
-The frontend runs on `http://localhost:5173` and proxies API calls to the backend.
-
-## 🧩 Environment configuration
-
-### Backend (`Backend/.env`)
-
-```env
-MONGO_DB=<your-mongo-connection-string>
-JWT_KEY=<your-jwt-secret>
-```
-
-### Frontend (`Frontend/.env` and `Frontend/.env.production`)
-
-- `Frontend/.env` (dev): keep `VITE_API_URL` empty to use local proxy
-- `Frontend/.env.production` (prod): set `VITE_API_URL=https://houserent-eqqo.onrender.com`
-
-## 📸 Screenshots
-
-Add screenshots to `Frontend/public` (or anywhere in the repo), then reference them here:
-
-![Homepage](Frontend/public/screenshot-homepage.png)
+A full-stack MERN house rental platform where renters can discover and book properties, owners can manage listings, and admins can control platform operations.
 
 ---
 
-## 🔧 Notes
+## Features
 
-- API calls are routed through `Frontend/src/config/api.js`.
-- Authentication uses JWT cookies.
-- Uploaded images are stored in the backend `uploads/` folder.
+- Authentication: JWT-based register/login with bcrypt password hashing
+- Role-based access: Admin, Owner, and Renter flows
+- Property listings: Browse all available properties
+- Owner dashboard: Add, update, and delete property listings
+- Booking workflow: Create bookings and manage booking status
+- Admin panel: View users, properties, bookings, and handle owner approval
+- Image upload: Property image upload via multer with static serving
+- Responsive UI: Built with React + Tailwind CSS
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19, Vite 7, React Router, Axios, Tailwind CSS 4, Ant Design |
+| Backend | Node.js, Express 5, JWT, bcrypt, cookie-parser, multer |
+| Database | MongoDB (Mongoose) |
+| Auth | JWT + HTTP-only cookie / Bearer token |
+| API Client | Centralized `apiUrl()` and `assetUrl()` helpers |
+| Dev Tools | ESLint, Nodemon |
+
+---
+
+## Project Structure
+
+```text
+HomeBuddy/
+|- README.md
+|- Server/
+|  |- index.js
+|  |- package.json
+|  |- .env
+|  |- config/
+|  |  |- connect.js
+|  |- controllers/
+|  |  |- adminController.js
+|  |  |- ownerController.js
+|  |  |- userController.js
+|  |- middlewares/
+|  |  |- authMiddleware.js
+|  |- models/
+|  |  |- BookingSchema.js
+|  |  |- PropertySchema.js
+|  |  |- UserSchema.js
+|  |- routes/
+|  |  |- adminRoutes.js
+|  |  |- ownerRoutes.js
+|  |  |- userRoutes.js
+|  |- uploads/
+|
+|- Client/
+   |- package.json
+   |- vite.config.js
+   |- index.html
+   |- src/
+      |- App.jsx
+      |- main.jsx
+      |- config/
+      |  |- api.js
+      |- context/
+      |  |- UserContext.jsx
+      |- modules/
+         |- admin/
+         |- common/
+         |- user/
+```
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+- MongoDB Atlas/local MongoDB URI
+
+---
+
+### 1. Clone and Install
+
+```bash
+git clone https://github.com/Archit-dev003/HouseRent.git
+cd HomeBuddy
+
+# Install backend dependencies
+cd Server
+npm install
+
+# Install frontend dependencies
+cd ../Client
+npm install
+```
+
+---
+
+### 2. Configure Environment Variables
+
+Server (`Server/.env`):
+
+```env
+MONGO_DB=your_mongodb_connection_string
+JWT_KEY=your_jwt_secret_key
+PORT=8001
+FRONTEND_URL=http://localhost:5173
+FRONTEND_ORIGIN=http://127.0.0.1:5173
+```
+
+Client (`Client/.env`) - optional for deployed mode:
+
+```env
+VITE_API_URL=http://localhost:8001
+```
+
+Notes:
+- In local development (`localhost`/`127.0.0.1`), frontend uses Vite proxy for `/api` and `/uploads`.
+- In deployed builds, frontend uses `VITE_API_URL` as backend host.
+
+---
+
+### 3. Run Development Servers
+
+```bash
+# Terminal 1 - Server
+cd Server
+npm start
+
+# Terminal 2 - Client
+cd Client
+npm run dev
+```
+
+App URL: `http://localhost:5173`
+Backend URL: `http://localhost:8001`
+
+---
+
+## API Reference
+
+Base URL: `http://localhost:8001`
+
+### User APIs (`/api/user`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/user/register` | Register user (Renter/Owner/Admin) |
+| POST | `/api/user/login` | Login and issue JWT token |
+| POST | `/api/user/forgotpassword` | Reset password |
+| GET | `/api/user/getAllProperties` | Get all listed properties |
+| POST | `/api/user/getuserdata` | Get current user data (auth required) |
+| POST | `/api/user/bookinghandle/:propertyid` | Create booking for property (auth required) |
+| GET | `/api/user/getallbookings` | Get renter bookings (auth required) |
+
+### Admin APIs (`/api/admin`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/getallusers` | Get all users (auth required) |
+| POST | `/api/admin/handlestatus` | Approve/reject owner status (auth required) |
+| GET | `/api/admin/getallproperties` | Get all properties (auth required) |
+| GET | `/api/admin/getallbookings` | Get all bookings (auth required) |
+
+### Owner APIs (`/api/owner`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/owner/postproperty` | Add new property with images (auth required) |
+| GET | `/api/owner/getallproperties` | Get owner properties (auth required) |
+| GET | `/api/owner/getallbookings` | Get owner bookings (auth required) |
+| POST | `/api/owner/handlebookingstatus` | Update booking status (auth required) |
+| DELETE | `/api/owner/deleteproperty/:propertyid` | Delete owner property (auth required) |
+| PATCH | `/api/owner/updateproperty/:propertyid` | Update owner property (auth required) |
+
+---
+
+## Frontend Routes
+
+| Route | Description |
+|------|-------------|
+| `/` | Landing/home page |
+| `/login` | User login |
+| `/register` | User registration |
+| `/forgotpassword` | Password reset |
+| `/adminhome` | Admin dashboard |
+| `/ownerhome` | Owner dashboard |
+| `/renterhome` | Renter dashboard |
+| `/getAllProperties` | Property browsing cards |
+
+---
+
+## Security Features
+
+- bcrypt password hashing
+- JWT authentication with expiry
+- Auth middleware for protected endpoints
+- Cookie-based auth support (`token`) + Bearer token fallback
+- CORS allowlist based on environment variables
+- Owner approval workflow handled by admin
+
+---
+
+## Database Models
+
+### User
+
+```text
+name, email, password, type, granted(optional)
+```
+
+### Property
+
+```text
+ownerId, ownerName, propertyType, propertyAdType, propertyAddress,
+ownerContact, propertyAmt, propertyImage, additionalInfo, isAvailable
+```
+
+### Booking
+
+```text
+propertyId/propertId, ownerID, userID, userName, phone, bookingStatus
+```
+
+---
+
+## Available Scripts
+
+### Server (`Server/package.json`)
+
+- `npm start` - run backend using nodemon
+- `npm test` - placeholder test script
+
+### Client (`Client/package.json`)
+
+- `npm run dev` - start Vite dev server
+- `npm run build` - create production build
+- `npm run preview` - preview production build
+- `npm run lint` - run ESLint
+
+---
+
+## Troubleshooting
+
+- If backend fails to start, confirm `.env` exists in `Server/` and `MONGO_DB` is valid.
+- If frontend cannot call APIs, verify backend is running on `8001` and CORS origins match.
+- On Windows, folder names are case-sensitive in commands here; use exactly `Server` and `Client`.
+- If images do not render, ensure files exist under `Server/uploads` and backend static route is active.
+
+---
+
+## Deployment
+
+### Backend
+
+- Deploy `Server/` to any Node hosting (Render, Railway, EC2, VPS)
+- Set environment variables from `Server/.env`
+- Start command: `npm start`
+
+### Frontend
+
+- Deploy `Client/` to Vercel/Netlify
+- Set `VITE_API_URL` to your deployed backend URL
+- Build command: `npm run build`
+
+---
+
+## License
+
+MIT License - free to use for educational and personal projects.
